@@ -56,7 +56,8 @@ const app = (props) => {
         {name: 'Manu', age: 29},
         {name: 'Thu', age: 22},
     ],
-    otherState: 'some other state'
+    otherState: 'some other state',
+    showPersons: false
   });
 
   const [otherState] = useState('some other value');
@@ -74,19 +75,43 @@ const app = (props) => {
       ],
       
       //STATE WILL BE REPLACED WHEN SWITCHING, SO SET IT AGAIN
-      otherState: personsState.otherState
+      otherState: personsState.otherState,
+      showPersons: personsState.showPersons
     });
   }
 
-  const nameChangeHandler = (event) => {
+  // const nameChangeHandler = (event) => {
+  //   setPersonsState({
+  //     persons: [
+  //       {name: 'A_', age: 28},
+  //       {name: event.target.value, age: 29},
+  //       {name: 'C_', age: 22},
+  //     ],
+  //     otherState: personsState.otherState,
+  //     showPersons: personsState.showPersons
+  //   })
+  // }
+
+  const deletePersonHandler = (personIndex) => {
+    const persons = personsState.persons;
+    persons.splice(personIndex, 1);
+    setPersonsState({
+      persons: persons,
+      otherState: personsState.otherState,
+      showPersons: personsState.showPersons
+    });
+  }
+
+  const togglePersonHandler = () => {
     setPersonsState({
       persons: [
-        {name: 'A_', age: 28},
-        {name: event.target.value, age: 29},
-        {name: 'C_', age: 22},
+        {name: 'A', age: 28},
+        {name: 'B', age: 29},
+        {name: 'C', age: 22},
       ],
-      otherState: personsState.otherState
-    })
+      otherState: personsState.otherState,
+      showPersons: !personsState.showPersons
+    });
   }
 
   const style = {
@@ -97,25 +122,67 @@ const app = (props) => {
     cursor: 'pointer'
   }
 
+  let persons = null;
+
+  if (personsState.showPersons) {
+    persons = (
+      <div>
+        {personsState.persons.map((person, index) => {
+          return (<Person 
+            click = {deletePersonHandler.bind(this, index)}
+            name={person.name} 
+            age={person.age}
+          />)
+        })}
+
+        {/* <Person 
+          name={personsState.persons[0].name} 
+          age={personsState.persons[0].age}
+          click={switchNameHandler.bind(this, 'Jerry')}
+          changed={nameChangeHandler}
+        />
+        <Person 
+          name={personsState.persons[1].name} 
+          age={personsState.persons[1].age}
+        />
+        <Person 
+          name={personsState.persons[2].name} 
+          age={personsState.persons[2].age}
+        /> */}
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <h1>Hello, my name is Tim.</h1>
       <p>This is working</p>
       <button style={style} onClick={switchNameHandler.bind(this, "Bark")}>Switch Name</button>
-      <Person 
-        name={personsState.persons[0].name} 
-        age={personsState.persons[0].age}
-        click={switchNameHandler.bind(this, 'Jerry')}
-        changed={nameChangeHandler}
-      />
-      <Person 
-        name={personsState.persons[1].name} 
-        age={personsState.persons[1].age}
-      />
-      <Person 
-        name={personsState.persons[2].name} 
-        age={personsState.persons[2].age}
-      />
+      
+      <button style={style} onClick={togglePersonHandler}>Show Group Person</button>
+      
+      {/* { personsState.showPersons === true ?
+        <div>
+          <Person 
+            name={personsState.persons[0].name} 
+            age={personsState.persons[0].age}
+            click={switchNameHandler.bind(this, 'Jerry')}
+            changed={nameChangeHandler}
+          />
+          <Person 
+            name={personsState.persons[1].name} 
+            age={personsState.persons[1].age}
+          />
+          <Person 
+            name={personsState.persons[2].name} 
+            age={personsState.persons[2].age}
+          />
+        </div> : <p>Deo co nha</p>
+      } */}
+
+      {persons}
+      
+      
 
     </div>
   );  
